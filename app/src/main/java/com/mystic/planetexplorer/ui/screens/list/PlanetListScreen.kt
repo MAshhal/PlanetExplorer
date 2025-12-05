@@ -1,34 +1,19 @@
 package com.mystic.planetexplorer.ui.screens.list
 
-import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
 import com.mystic.planetexplorer.core.designsystem.components.LoadingBox
 import com.mystic.planetexplorer.core.model.Planet
 
@@ -45,16 +30,10 @@ fun PlanetListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
-        snapshotFlow { uiState }
-            .collect {
-                println("New UI State: $it")
-            }
-    }
-
     Scaffold(
         modifier = modifier.fillMaxSize(),
-    ) { _ ->
+    ) { paddingValues ->
+        // AnimatedContent provides smooth transitions between Loading/Success/Error states
         AnimatedContent(
             targetState = uiState,
             contentKey = {
@@ -66,17 +45,27 @@ fun PlanetListScreen(
             }
         ) { currentState ->
             when (currentState) {
-                is PlanetListUiState.Loading -> LoadingBox(modifier = Modifier.fillMaxSize())
+                is PlanetListUiState.Loading -> LoadingBox(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                )
 
                 is PlanetListUiState.Success -> {
                     PlanetListContent(
+                        modifier = Modifier.padding(paddingValues),
                         uiState = currentState,
                         navigateToPlanetDetails = navigateToPlanetDetails
                     )
                 }
 
                 is PlanetListUiState.Error -> {
-                    LoadingBox(modifier = Modifier.fillMaxSize())
+                    // TODO: Implement proper error UI instead of loading indicator
+                    LoadingBox(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                    )
                 }
             }
         }
@@ -94,7 +83,10 @@ fun PlanetListContent(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(uiState.planets) { planet ->
+        items(
+            items = uiState.planets,
+            key = { it.name } // Didn't use key as there's a chance of duplicates
+        ) { planet ->
             PlanetCard(
                 planet = planet,
                 onPlanetSelected = { navigateToPlanetDetails(planet) }
@@ -102,33 +94,3 @@ fun PlanetListContent(
         }
     }
 }
-
-//@Composable
-//fun PlanetCard(
-//    planet: Planet,
-//    modifier: Modifier = Modifier,
-//    onPlanetSelected: () -> Unit
-//) {
-//    Card(
-//        modifier = Modifier.fillMaxWidth(),
-//        onClick = onPlanetSelected
-//    ) {
-//        ListItem(
-//            modifier = modifier,
-//            leadingContent = {
-//                AsyncImage(
-//                    modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-//                    model = "https://picsum.photos/seed/${planet.id}/300/200",
-//                    contentDescription = "Placeholder image for planet ${planet.name}"
-//                )
-//            },
-//            headlineContent = {
-//                Text(text = planet.name)
-//            },
-//            supportingContent = {
-//                // TODO: refactor to use string resources
-//                Text(text = "Climate: ${planet.climate}")
-//            }
-//        )
-//    }
-//}

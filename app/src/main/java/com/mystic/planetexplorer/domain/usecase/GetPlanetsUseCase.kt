@@ -10,6 +10,10 @@ import javax.inject.Inject
  * Author: Muhammad Ashhal
  */
 
+/**
+ * Use case for retrieving paginated (when implemented) list of planets.
+ * Provides a clean separation between UI layer and data layer.
+ */
 class GetPlanetsUseCase @Inject constructor(
     private val repository: PlanetRepository
 ) {

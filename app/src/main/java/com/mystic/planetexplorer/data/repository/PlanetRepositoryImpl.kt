@@ -14,6 +14,14 @@ import javax.inject.Inject
  * Author: Muhammad Ashhal
  */
 
+/**
+ * Implementation of PlanetRepository that fetches planet data from the remote API.
+ *
+ * This repository handles all network communication and data mapping between
+ * the API layer (DTOs) and the domain layer (models).
+ *
+ * @param service The Retrofit service for making API calls
+ */
 class PlanetRepositoryImpl @Inject constructor(
     private val service: PlanetService
 ) : PlanetRepository {

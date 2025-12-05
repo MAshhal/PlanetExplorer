@@ -10,10 +10,14 @@ import kotlin.annotation.AnnotationRetention.RUNTIME
  * Time: 9:04 AM
  */
 
+/**
+ * Dagger qualifier annotation for injecting specific CoroutineDispatchers.
+ */
 @Qualifier
 @Retention(RUNTIME)
 annotation class Dispatcher(val dispatcher: DispatcherType)
 
 enum class DispatcherType {
-    DEFAULT, IO
+    DEFAULT, // For CPU-intensive work
+    IO       // For I/O operations (network, database)
 }

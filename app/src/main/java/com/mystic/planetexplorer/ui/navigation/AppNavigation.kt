@@ -35,13 +35,6 @@ fun AppNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    LaunchedEffect(true) {
-        navController.currentBackStack
-            .map { it.map { it.id } }
-            .collect {
-                println("New BackStack: $it")
-            }
-    }
     NavHost(
         modifier = modifier,
         navController = navController,
@@ -53,6 +46,7 @@ fun AppNavHost(
             }
         }
 
+        // Hosts PlanetDetailsFragment in Compose navigation (Fragment-Compose interop)
         composable<Screens.PlanetDetails> {
             val args = it.toRoute<Screens.PlanetDetails>()
             val fragmentState = rememberFragmentState()
@@ -68,23 +62,34 @@ fun AppNavHost(
     }
 }
 
+/**
+ * Type-safe navigation screens using Kotlin serialization.
+ * Planet object is serialized to JSON string for safe navigation argument passing.
+ */
 @Serializable
 sealed interface Screens {
     @Serializable
-    data object PlanetList: Screens
+    data object PlanetList : Screens
 
     @Serializable
-    data class PlanetDetails(val planet: String): Screens {
+    data class PlanetDetails(val planet: String) : Screens {
         companion object {
             const val EXTRA_PLANET = "planet_id"
         }
     }
 }
 
+/**
+ * Encodes Planet object to JSON string for navigation.
+ */
 private fun encodePlanetToString(planet: Planet): String {
     return Json.encodeToString(planet)
 }
 
+/**
+ * Decodes JSON string back to Planet object.
+ * @throws kotlinx.serialization.SerializationException if JSON is malformed
+ */
 fun decodePlanetFromString(value: String): Planet {
     return Json.decodeFromString(value)
 }

@@ -8,13 +8,14 @@ import kotlinx.serialization.Serializable
  */
 
 /**
- * Nullable values indicate that API returned "unknown" for that value
+ * Domain model for a planet with properly typed fields.
+ * Nullable values indicate that API returned "unknown" for that field.
  */
 @Serializable
 data class Planet(
     val id: Int,
     val name: String,
     val climate: String?,
-    val orbitalPeriod: Int?,
+    val orbitalPeriod: Int?, // null if unknown or non-numeric
     val gravity: String?,
 )

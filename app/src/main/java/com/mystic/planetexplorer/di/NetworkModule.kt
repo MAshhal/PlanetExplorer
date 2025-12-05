@@ -18,10 +18,18 @@ import javax.inject.Singleton
  * Author: Muhammad Ashhal
  */
 
+/**
+ * Dagger Hilt module providing network dependencies.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+    /**
+     * Provides JSON parser with lenient settings to handle API inconsistencies.
+     * - ignoreUnknownKeys: Prevents crashes when API returns extra fields
+     * - isLenient: Allows malformed JSON to be parsed when possible
+     */
     @Provides
     @Singleton
     fun provideJsonParser(): Json {

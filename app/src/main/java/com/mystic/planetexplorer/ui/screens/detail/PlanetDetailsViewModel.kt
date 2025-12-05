@@ -9,6 +9,7 @@ import com.mystic.planetexplorer.ui.navigation.decodePlanetFromString
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -29,12 +30,18 @@ class PlanetDetailsViewModel @Inject constructor(
         savedStateHandle.getStateFlow<String?>(Screens.PlanetDetails.EXTRA_PLANET, null)
 
     /**
-     * Not really a good practice to pass entire objects
-     * However, I'm doing it to save an API call
+     * Decodes planet from navigation argument.
+     * Passing entire objects through navigation avoids an extra API call.
+     * JSON decode failures are caught and mapped to Error state.
      */
     val uiState = _selectedPlanet
         .filterNotNull()
-        .map { PlanetDetailsUiState.Success(decodePlanetFromString(it)) }
+        .map<String, PlanetDetailsUiState> {
+            PlanetDetailsUiState.Success(decodePlanetFromString(it))
+        }
+        .catch { exception ->
+            emit(PlanetDetailsUiState.Error(exception.message ?: "Failed to load planet details"))
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5.seconds),

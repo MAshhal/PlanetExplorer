@@ -5,11 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.mystic.planetexplorer.core.model.Planet
 import com.mystic.planetexplorer.core.network.Dispatcher
 import com.mystic.planetexplorer.core.network.DispatcherType
-import com.mystic.planetexplorer.core.network.map
+import com.mystic.planetexplorer.core.network.Result
 import com.mystic.planetexplorer.domain.usecase.GetPlanetsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -31,21 +30,36 @@ import kotlin.time.Duration.Companion.seconds
 class PlanetListViewModel @Inject constructor(
     private val planetsUseCase: GetPlanetsUseCase,
     @Dispatcher(DispatcherType.IO) private val ioDispatcher: CoroutineDispatcher
-): ViewModel() {
+) : ViewModel() {
     private val _uiState = MutableStateFlow<PlanetListUiState>(PlanetListUiState.Loading)
-    val uiState: StateFlow<PlanetListUiState> get() = _uiState
-        .onStart { loadPlanets(); println("onStart called") }
-        .flowOn(ioDispatcher) // Inject dispatcher later to run this on IO
-        .distinctUntilChanged()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5.seconds),
-            initialValue = _uiState.value
-        )
 
+    // StateFlow that automatically loads planets when first subscriber collects
+    // Stops collection 5 seconds after last subscriber leaves to save resources
+    val uiState: StateFlow<PlanetListUiState>
+        get() = _uiState
+            .onStart { loadPlanets() }
+            .flowOn(ioDispatcher)
+            .distinctUntilChanged()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5.seconds),
+                initialValue = _uiState.value
+            )
+
+    /**
+     * Loads planets and handles all Result states (Success/Failure/Loading).
+     * Edge case: Network failures are caught and displayed as error state.
+     */
     private suspend fun loadPlanets() {
-        val planets = planetsUseCase()
-        planets.map { list -> _uiState.update { PlanetListUiState.Success(list) } }
+        when (val result = planetsUseCase()) {
+            is Result.Success -> _uiState.update { PlanetListUiState.Success(result.data) }
+            is Result.Failure -> _uiState.update {
+                PlanetListUiState.Error(result.exception.message ?: "Unknown error occurred")
+            }
+
+            is Result.Loading -> { /* Already in loading state */
+            }
+        }
     }
 
 }

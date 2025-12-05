@@ -10,6 +10,10 @@ import javax.inject.Inject
  * Author: Muhammad Ashhal
  */
 
+/**
+ * Use case for retrieving a single planet by ID.
+ * Note: Currently unused as planet details are passed via navigation to avoid extra API call.
+ */
 class GetPlanetUseCase @Inject constructor(
     private val repository: PlanetRepository
 ) {

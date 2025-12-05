@@ -11,13 +11,24 @@ import retrofit2.http.Query
  * Author: Muhammad Ashhal
  */
 
+/**
+ * Retrofit service interface for SWAPI planet endpoints.
+ */
 interface PlanetService {
 
+    /**
+     * Fetches paginated list of planets.
+     * @param page The page number (1-indexed)
+     */
     @GET("planets")
     suspend fun getPlanets(
         @Query("page") page: Int = 1
     ): PlanetResponse
 
+    /**
+     * Fetches a single planet by ID.
+     * @param id The planet ID
+     */
     @GET("planets/{id}")
     suspend fun getPlanet(
         @Path("id") id: Int
