@@ -13,5 +13,5 @@ import javax.inject.Inject
 class GetPlanetsUseCase @Inject constructor(
     private val repository: PlanetRepository
 ) {
-    suspend operator fun invoke(id: Int): Result<Planet> = repository.getPlanet(id)
+    suspend operator fun invoke(page: Int = 1): Result<List<Planet>> = repository.getPlanets(page)
 }
