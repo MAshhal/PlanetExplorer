@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -13,7 +14,6 @@ import coil.load
 import com.mystic.planetexplorer.R
 import com.mystic.planetexplorer.core.model.Planet
 import com.mystic.planetexplorer.databinding.FragmentPlanetDetailsBinding
-import com.mystic.planetexplorer.ui.navigation.Screens
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -46,19 +46,18 @@ class PlanetDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.toolbar.setNavigationOnClickListener { onBackPressedCallback() }
 
+        binding.buttonRetry.setOnClickListener {
+            onBackPressedCallback()
+        }
+
         // Collect UI state only when fragment is at least STARTED (lifecycle-aware)
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     when (state) {
-                        is PlanetDetailsUiState.Success -> renderState(state.planet)
-                        is PlanetDetailsUiState.Error -> {
-                            // TODO: Show error state in UI
-                        }
-
-                        is PlanetDetailsUiState.Loading -> {
-                            // TODO: Show loading state in UI
-                        }
+                        is PlanetDetailsUiState.Loading -> showLoading()
+                        is PlanetDetailsUiState.Success -> showSuccess(state.planet)
+                        is PlanetDetailsUiState.Error -> showError(state.message)
                     }
                 }
             }
@@ -66,18 +65,51 @@ class PlanetDetailsFragment : Fragment() {
     }
 
     /**
+     * Shows loading state - hides content and error, shows progress bar.
+     */
+    private fun showLoading() {
+        with(binding) {
+            progressBar.isVisible = true
+            scrollView.isVisible = false
+            errorLayout.isVisible = false
+        }
+    }
+
+    /**
+     * Shows error state - hides content and loading, shows error message.
+     */
+    private fun showError(message: String) {
+        with(binding) {
+            progressBar.isVisible = false
+            scrollView.isVisible = false
+            errorLayout.isVisible = true
+            textErrorMessage.text = message
+        }
+    }
+
+    /**
+     * Shows success state - hides loading and error, renders planet data.
+     */
+    private fun showSuccess(planet: Planet) {
+        with(binding) {
+            progressBar.isVisible = false
+            scrollView.isVisible = true
+            errorLayout.isVisible = false
+        }
+        renderPlanetData(planet)
+    }
+
+    /**
      * Renders planet details to UI views.
      * Handles nullable fields by displaying fallback strings.
      */
-    private fun renderState(planet: Planet) {
+    private fun renderPlanetData(planet: Planet) {
         with(binding) {
             imagePlanet.load(data = "https://picsum.photos/seed/${planet.id}/900/600")
             textPlanetName.text = planet.name
-            // Capitalize first letter of climate, or show "Unknown" if null
             textPlanetClimate.text = planet.climate
                 ?.replaceFirstChar { it.uppercase() }
                 ?: getString(R.string.unknown_climate)
-            // Format orbital period with "days" suffix, or show "Unknown" if null
             textPlanetOrbitalPeriod.text = planet.orbitalPeriod
                 ?.let { "$it days" }
                 ?: getString(R.string.unknown)
