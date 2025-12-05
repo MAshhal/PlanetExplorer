@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">PlanetExplorer</string>
+    <string name="loading">Loading</string>
+    <string name="orbital_period">Orbital Period</string>
+    <string name="gravity">Gravity</string>
+    <string name="unknown_climate">Unknown climate</string>
+    <string name="unknown">Unknown</string>
 </resources>

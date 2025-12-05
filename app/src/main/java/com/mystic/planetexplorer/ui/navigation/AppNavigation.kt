@@ -1,18 +1,29 @@
 package com.mystic.planetexplorer.ui.navigation
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.core.os.bundleOf
 import androidx.fragment.compose.AndroidFragment
 import androidx.fragment.compose.rememberFragmentState
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.mystic.planetexplorer.core.model.Planet
 import com.mystic.planetexplorer.ui.screens.detail.PlanetDetailsFragment
 import com.mystic.planetexplorer.ui.screens.list.PlanetListScreen
+import com.mystic.planetexplorer.ui.screens.list.PlanetListViewModel
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 /**
  * Created: Fri 05 Dec 2025
@@ -21,29 +32,38 @@ import kotlinx.serialization.Serializable
 
 @Composable
 fun AppNavHost(
+    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    val state = rememberNavController()
-
+    LaunchedEffect(true) {
+        navController.currentBackStack
+            .map { it.map { it.id } }
+            .collect {
+                println("New BackStack: $it")
+            }
+    }
     NavHost(
         modifier = modifier,
-        navController = state,
+        navController = navController,
         startDestination = Screens.PlanetList
     ) {
         composable<Screens.PlanetList> {
-            PlanetListScreen()
+            PlanetListScreen { planet ->
+                navController.navigate(Screens.PlanetDetails(encodePlanetToString(planet)))
+            }
         }
 
         composable<Screens.PlanetDetails> {
             val args = it.toRoute<Screens.PlanetDetails>()
-
             val fragmentState = rememberFragmentState()
 
             AndroidFragment<PlanetDetailsFragment>(
                 modifier = Modifier.fillMaxSize(),
                 fragmentState = fragmentState,
-                arguments = bundleOf(Screens.PlanetDetails.EXTRA_PLANET_ID to args.id)
-            )
+                arguments = bundleOf(Screens.PlanetDetails.EXTRA_PLANET to args.planet)
+            ) { fragment ->
+                fragment.onBackPressedCallback = { navController.navigateUp() }
+            }
         }
     }
 }
@@ -54,9 +74,17 @@ sealed interface Screens {
     data object PlanetList: Screens
 
     @Serializable
-    data class PlanetDetails(val id: Int): Screens {
+    data class PlanetDetails(val planet: String): Screens {
         companion object {
-            const val EXTRA_PLANET_ID = "planet_id"
+            const val EXTRA_PLANET = "planet_id"
         }
     }
+}
+
+private fun encodePlanetToString(planet: Planet): String {
+    return Json.encodeToString(planet)
+}
+
+fun decodePlanetFromString(value: String): Planet {
+    return Json.decodeFromString(value)
 }

@@ -1,5 +1,7 @@
 package com.mystic.planetexplorer.core.model
 
+import kotlinx.serialization.Serializable
+
 /**
  * Created: Fri 05 Dec 2025
  * Author: Muhammad Ashhal
@@ -8,6 +10,7 @@ package com.mystic.planetexplorer.core.model
 /**
  * Nullable values indicate that API returned "unknown" for that value
  */
+@Serializable
 data class Planet(
     val id: Int,
     val name: String,
