@@ -11,11 +11,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mystic.planetexplorer.core.designsystem.components.ErrorBox
 import com.mystic.planetexplorer.core.designsystem.components.LoadingBox
 import com.mystic.planetexplorer.core.model.Planet
+import com.mystic.planetexplorer.R
 
 /**
  * Created: Fri 05 Dec 2025
@@ -60,8 +63,9 @@ fun PlanetListScreen(
                 }
 
                 is PlanetListUiState.Error -> {
-                    // TODO: Implement proper error UI instead of loading indicator
-                    LoadingBox(
+                    ErrorBox(
+                        message = stringResource(R.string.error_loading_planets),
+                        onRetry = { viewModel.retry() },
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(paddingValues)

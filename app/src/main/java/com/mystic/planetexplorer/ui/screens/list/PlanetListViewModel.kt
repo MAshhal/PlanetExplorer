@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
@@ -59,6 +60,17 @@ class PlanetListViewModel @Inject constructor(
 
             is Result.Loading -> { /* Already in loading state */
             }
+        }
+    }
+
+    /**
+     * Public function to retry loading planets after an error.
+     * Sets loading state and attempts to fetch data again.
+     */
+    fun retry() {
+        viewModelScope.launch(ioDispatcher) {
+            _uiState.update { PlanetListUiState.Loading }
+            loadPlanets()
         }
     }
 
