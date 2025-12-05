@@ -26,6 +26,7 @@ fun LoadingBox(
         contentAlignment = Alignment.Center
     ) {
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             CircularProgressIndicator()

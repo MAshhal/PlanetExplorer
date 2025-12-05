@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -65,12 +66,7 @@ fun PlanetListScreen(
             }
         ) { currentState ->
             when (currentState) {
-                is PlanetListUiState.Loading ->
-                    Box(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        LoadingBox()
-                    }
+                is PlanetListUiState.Loading -> LoadingBox(modifier = Modifier.fillMaxSize())
 
                 is PlanetListUiState.Success -> {
                     PlanetListContent(
@@ -80,7 +76,7 @@ fun PlanetListScreen(
                 }
 
                 is PlanetListUiState.Error -> {
-                    Box(modifier = Modifier.fillMaxSize())
+                    LoadingBox(modifier = Modifier.fillMaxSize())
                 }
             }
         }
