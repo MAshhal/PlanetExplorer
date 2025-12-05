@@ -1,4 +1,4 @@
-package com.mystic.planetexplorer.ui.theme
+package com.mystic.planetexplorer.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
