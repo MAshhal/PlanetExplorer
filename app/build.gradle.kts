@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.StringReader
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,6 +9,15 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+}
+
+val baseUrl = providers.fileContents(
+    isolated.rootProject.projectDirectory.file("local.properties")
+).asText.map { text ->
+    Properties().also { it.load(StringReader(text)) }
+}.map { props ->
+    // Just a default in case I forget to add base URL, wouldn't do so in production
+    props.getProperty("SWAPI_BASE_URL") ?: "https://swapi.dev/api/"
 }
 
 android {
@@ -21,6 +32,12 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField(
+            "String",
+            "SWAPI_BASE_URL",
+            baseUrl.map { "\"$it\"" }.get()
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,7 +56,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
+        viewBinding = true
         compose = true
+        buildConfig = true
     }
 }
 
