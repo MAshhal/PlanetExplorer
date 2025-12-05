@@ -16,8 +16,7 @@ val baseUrl = providers.fileContents(
 ).asText.map { text ->
     Properties().also { it.load(StringReader(text)) }
 }.map { props ->
-    // Just a default in case I forget to add base URL, wouldn't do so in production
-    props.getProperty("SWAPI_BASE_URL") ?: "https://swapi.dev/api/"
+    props.getProperty("SWAPI_BASE_URL")
 }
 
 android {
