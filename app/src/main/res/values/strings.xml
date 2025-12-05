@@ -5,4 +5,11 @@
     <string name="gravity">Gravity</string>
     <string name="unknown_climate">Unknown climate</string>
     <string name="unknown">Unknown</string>
+
+    <!-- Error messages -->
+    <string name="error_loading_planets">Failed to load planets</string>
+    <string name="error_loading_planet_details">Failed to load planet details</string>
+    <string name="retry">Retry</string>
+    <string name="error_generic">Something went wrong</string>
+    <string name="check_connection">Please check your internet connection and try again.</string>
 </resources>
