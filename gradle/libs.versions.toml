@@ -27,6 +27,7 @@ turbine = "1.2.1"
 [libraries]
 # --- Core & UI ---
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidxAppcompat" }
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCoreKtx" }
 androidx-constraint-layout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidxConstraintLayout" }
 google-views-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
