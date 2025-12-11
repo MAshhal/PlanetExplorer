@@ -7,20 +7,17 @@ import com.mystic.planetexplorer.core.network.Dispatcher
 import com.mystic.planetexplorer.core.network.DispatcherType
 import com.mystic.planetexplorer.core.network.Result
 import com.mystic.planetexplorer.domain.usecase.GetPlanetsUseCase
+import com.mystic.planetexplorer.ui.util.asState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.time.Duration.Companion.seconds
 
 /**
  * Created: Fri 05 Dec 2025
@@ -41,11 +38,7 @@ class PlanetListViewModel @Inject constructor(
             .onStart { loadPlanets() }
             .flowOn(ioDispatcher)
             .distinctUntilChanged()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5.seconds),
-                initialValue = _uiState.value
-            )
+            .asState(_uiState.value)
 
     /**
      * Loads planets and handles all Result states (Success/Failure/Loading).
@@ -77,7 +70,7 @@ class PlanetListViewModel @Inject constructor(
 }
 
 sealed interface PlanetListUiState {
-    data object Loading: PlanetListUiState
-    data class Success(val planets: List<Planet>): PlanetListUiState
-    data class Error(val message: String): PlanetListUiState
+    data object Loading : PlanetListUiState
+    data class Success(val planets: List<Planet>) : PlanetListUiState
+    data class Error(val message: String) : PlanetListUiState
 }
