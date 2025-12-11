@@ -12,8 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,17 +26,27 @@ import javax.inject.Inject
 @HiltViewModel
 class PlanetListViewModel @Inject constructor(
     private val planetsUseCase: GetPlanetsUseCase,
-    @Dispatcher(DispatcherType.IO) private val ioDispatcher: CoroutineDispatcher
+    @property:Dispatcher(DispatcherType.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<PlanetListUiState>(PlanetListUiState.Loading)
+    private val _sort = MutableStateFlow(PlanetSort.ID)
+    private val _uiState: MutableStateFlow<PlanetListUiState> =
+        MutableStateFlow(PlanetListUiState.Loading)
 
     // StateFlow that automatically loads planets when first subscriber collects
     // Stops collection 5 seconds after last subscriber leaves to save resources
     val uiState: StateFlow<PlanetListUiState>
-        get() = _uiState
+        get() = combine(_uiState, _sort) { state, sort ->
+            when (state) {
+                is PlanetListUiState.Success -> {
+                    PlanetListUiState.Success(
+                        planets = state.planets.sortedWith(sort.comparator)
+                    )
+                }
+
+                else -> state
+            }
+        }
             .onStart { loadPlanets() }
-            .flowOn(ioDispatcher)
-            .distinctUntilChanged()
             .asState(_uiState.value)
 
     /**
@@ -73,4 +82,9 @@ sealed interface PlanetListUiState {
     data object Loading : PlanetListUiState
     data class Success(val planets: List<Planet>) : PlanetListUiState
     data class Error(val message: String) : PlanetListUiState
+}
+
+enum class PlanetSort(val comparator: Comparator<Planet>) {
+    ID(Comparator.comparing { it.id }),
+    NAME(Comparator.comparing { it.name });
 }
