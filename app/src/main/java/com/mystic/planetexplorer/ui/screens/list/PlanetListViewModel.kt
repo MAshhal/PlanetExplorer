@@ -26,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PlanetListViewModel @Inject constructor(
     private val planetsUseCase: GetPlanetsUseCase,
-    @property:Dispatcher(DispatcherType.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(DispatcherType.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val _sort = MutableStateFlow(PlanetSort.ID)
     private val _uiState: MutableStateFlow<PlanetListUiState> =
