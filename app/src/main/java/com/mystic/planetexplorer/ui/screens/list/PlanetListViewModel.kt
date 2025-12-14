@@ -65,6 +65,12 @@ class PlanetListViewModel @Inject constructor(
         }
     }
 
+    fun updateSort() {
+        _sort.update {
+            if (it == PlanetSort.ID) PlanetSort.NAME else PlanetSort.ID
+        }
+    }
+
     /**
      * Public function to retry loading planets after an error.
      * Sets loading state and attempts to fetch data again.
