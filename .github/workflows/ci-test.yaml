@@ -22,7 +22,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Add base url to local.properties
-      - run: echo "SWAPI_BASE_URL=https://swapi.info/api/" >> local.properties
+        run: echo "SWAPI_BASE_URL=https://swapi.info/api/" >> local.properties
 
       - name: Run unit tests
         run: ./gradlew test
