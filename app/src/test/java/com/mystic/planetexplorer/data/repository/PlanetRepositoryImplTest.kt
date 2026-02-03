@@ -38,7 +38,7 @@ class PlanetRepositoryImplTest {
             climate = "arid",
             orbitalPeriod = "304",
             gravity = "1 standard",
-            url = "https://swapi.dev/api/planets/1/"
+            url = "https://swapi.info/api/planets/1/"
         )
         coEvery { service.getPlanet(planetId) } returns dto
 
@@ -87,7 +87,7 @@ class PlanetRepositoryImplTest {
             climate = "unknown",
             orbitalPeriod = "unknown",
             gravity = "unknown",
-            url = "https://swapi.dev/api/planets/10/"
+            url = "https://swapi.info/api/planets/10/"
         )
         coEvery { service.getPlanet(planetId) } returns dto
 
@@ -111,19 +111,19 @@ class PlanetRepositoryImplTest {
                 climate = "arid",
                 orbitalPeriod = "304",
                 gravity = "1 standard",
-                url = "https://swapi.dev/api/planets/1/"
+                url = "https://swapi.info/api/planets/1/"
             ),
             PlanetDto(
                 name = "Alderaan",
                 climate = "temperate",
                 orbitalPeriod = "364",
                 gravity = "1 standard",
-                url = "https://swapi.dev/api/planets/2/"
+                url = "https://swapi.info/api/planets/2/"
             )
         )
         val response = PlanetResponse(
             results = dtoList,
-            next = "https://swapi.dev/api/planets/?page=2"
+            next = "https://swapi.info/api/planets/?page=2"
         )
         coEvery { service.getPlanets(page) } returns response
 
@@ -185,7 +185,7 @@ class PlanetRepositoryImplTest {
                     climate = "arid",
                     orbitalPeriod = "304",
                     gravity = "1 standard",
-                    url = "https://swapi.dev/api/planets/1/"
+                    url = "https://swapi.info/api/planets/1/"
                 )
             ),
             next = null
@@ -207,21 +207,21 @@ class PlanetRepositoryImplTest {
                     climate = "frozen",
                     orbitalPeriod = "549",
                     gravity = "1.1 standard",
-                    url = "https://swapi.dev/api/planets/4/"
+                    url = "https://swapi.info/api/planets/4/"
                 ),
                 PlanetDto(
                     name = "Dagobah",
                     climate = "unknown", // It's not actually unknown, just for test :)
                     orbitalPeriod = "341",
                     gravity = "unknown",
-                    url = "https://swapi.dev/api/planets/5/"
+                    url = "https://swapi.info/api/planets/5/"
                 ),
                 PlanetDto(
                     name = "Bespin",
                     climate = "temperate",
                     orbitalPeriod = "5110",
                     gravity = "1.5 (surface), 1 standard (Cloud City)",
-                    url = "https://swapi.dev/api/planets/6/"
+                    url = "https://swapi.info/api/planets/6/"
                 )
             )
             val response = PlanetResponse(results = dtoList, next = null)
@@ -262,10 +262,10 @@ class PlanetRepositoryImplTest {
                     climate = "temperate, tropical",
                     orbitalPeriod = "4818",
                     gravity = "1 standard",
-                    url = "https://swapi.dev/api/planets/3/"
+                    url = "https://swapi.info/api/planets/3/"
                 )
             ),
-            next = "https://swapi.dev/api/planets/?page=3"
+            next = "https://swapi.info/api/planets/?page=3"
         )
         coEvery { service.getPlanets(2) } returns page2Response
 
