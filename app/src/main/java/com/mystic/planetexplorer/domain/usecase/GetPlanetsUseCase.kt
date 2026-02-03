@@ -22,7 +22,7 @@ class GetPlanetsUseCase @Inject constructor(
     private val repository: PlanetRepository,
     @Dispatcher(DispatcherType.IO) private val ioDispatcher: CoroutineDispatcher
 ) {
-    suspend operator fun invoke(page: Int = 1): Result<List<Planet>> = withContext(ioDispatcher) {
-        repository.getPlanets(page)
+    suspend operator fun invoke(): Result<List<Planet>> = withContext(ioDispatcher) {
+        repository.getPlanets()
     }
 }

@@ -29,8 +29,8 @@ class PlanetRepositoryImpl @Inject constructor(
         return safeApiCall { service.getPlanet(id).toDomain() }
     }
 
-    override suspend fun getPlanets(page: Int): Result<List<Planet>> {
-        return safeApiCall { service.getPlanets(page) }
-            .map { response -> response.results.map { it.toDomain() } }
+    override suspend fun getPlanets(): Result<List<Planet>> {
+        return safeApiCall { service.getPlanets() }
+             .map { response -> response.map { it.toDomain() } }
     }
 }

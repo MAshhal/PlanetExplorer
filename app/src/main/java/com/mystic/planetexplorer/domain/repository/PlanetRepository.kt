@@ -15,6 +15,6 @@ import com.mystic.planetexplorer.core.network.Result
  * abstracting the data source (remote API, local cache, etc.) from the domain layer.
  */
 interface PlanetRepository {
-    suspend fun getPlanets(page: Int = 1): Result<List<Planet>>
+    suspend fun getPlanets(): Result<List<Planet>>
     suspend fun getPlanet(id: Int): Result<Planet>
 }

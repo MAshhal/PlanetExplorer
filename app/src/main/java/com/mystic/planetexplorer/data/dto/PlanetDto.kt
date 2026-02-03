@@ -9,12 +9,11 @@ import kotlinx.serialization.Serializable
  */
 
 /**
- * API response wrapper for paginated planet list.
+ * API response wrapper fot planet list.
  */
 @Serializable
 data class PlanetResponse(
-    val results: List<PlanetDto>,
-    val next: String? // URL to next page, null if last page
+    val results: List<PlanetDto>
 )
 
 /**

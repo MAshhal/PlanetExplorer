@@ -1,7 +1,6 @@
 package com.mystic.planetexplorer.data.api
 
 import com.mystic.planetexplorer.data.dto.PlanetDto
-import com.mystic.planetexplorer.data.dto.PlanetResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -17,13 +16,10 @@ import retrofit2.http.Query
 interface PlanetService {
 
     /**
-     * Fetches paginated list of planets.
-     * @param page The page number (1-indexed)
+     * Fetches list of planets.
      */
     @GET("planets")
-    suspend fun getPlanets(
-        @Query("page") page: Int = 1
-    ): PlanetResponse
+    suspend fun getPlanets(): List<PlanetDto>
 
     /**
      * Fetches a single planet by ID.
