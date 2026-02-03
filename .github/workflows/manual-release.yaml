@@ -1,0 +1,101 @@
+name: Manual Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      versionCode:
+        description: 'Version code for the release (integer)'
+        required: true
+        type: number
+      versionName:
+        description: 'Version name for the release (e.g., 1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Create local.properties
+        run: echo "SWAPI_BASE_URL=https://swapi.info/api/" > local.properties
+
+      - name: Run unit tests
+        run: ./gradlew test
+
+  build:
+    name: Build Release APK
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Create local.properties
+        run: echo "SWAPI_BASE_URL=https://swapi.info/api/" > local.properties
+
+      - name: Build release APK
+        run: ./gradlew assembleRelease -PversionCode=${{ inputs.versionCode }} -PversionName=${{ inputs.versionName }}
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: app/build/outputs/apk/release/app-release.apk
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Download APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release-apk
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.versionName }}
+          name: Release v${{ inputs.versionName }}
+          body: |
+            Release version ${{ inputs.versionName }} (build ${{ inputs.versionCode }})
+            
+            ## Changes
+            - Version code: ${{ inputs.versionCode }}
+            - Version name: ${{ inputs.versionName }}
+          files: app-release.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
