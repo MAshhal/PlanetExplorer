@@ -100,7 +100,7 @@ app/src/main/java/com/mystic/planetexplorer/
 Before building the project, add the SWAPI base URL to your `local.properties` file:
 
 ```properties
-SWAPI_BASE_URL=https://swapi.dev/api/
+SWAPI_BASE_URL=https://swapi.info/api/
 ```
 
 This file is git-ignored and should not be committed to version control.

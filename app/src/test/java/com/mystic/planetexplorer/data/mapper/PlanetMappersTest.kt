@@ -17,7 +17,7 @@ class PlanetMappersTest {
             climate = "arid",
             orbitalPeriod = "304",
             gravity = "1 standard",
-            url = "https://swapi.dev/api/planets/1/"
+            url = "https://swapi.info/api/planets/1/"
         )
 
         val result = dto.toDomain()
@@ -39,7 +39,7 @@ class PlanetMappersTest {
             climate = "temperate",
             orbitalPeriod = "364",
             gravity = "1 standard",
-            url = "https://swapi.dev/api/planets/2"
+            url = "https://swapi.info/api/planets/2"
         )
 
         val result = dto.toDomain()
@@ -54,7 +54,7 @@ class PlanetMappersTest {
             climate = "temperate, tropical",
             orbitalPeriod = "4818",
             gravity = "1 standard",
-            url = "https://swapi.dev/api/planets/3/"
+            url = "https://swapi.info/api/planets/3/"
         )
 
         val result = dto.toDomain()
@@ -69,7 +69,7 @@ class PlanetMappersTest {
             climate = "frozen",
             orbitalPeriod = "549",
             gravity = "1.1 standard",
-            url = "https://swapi.dev/api/planets/4/"
+            url = "https://swapi.info/api/planets/4/"
         )
 
         val result = dto.toDomain()
@@ -84,7 +84,7 @@ class PlanetMappersTest {
             climate = "murky, humid, foggy",
             orbitalPeriod = "341",
             gravity = "N/A",
-            url = "https://swapi.dev/api/planets/5/"
+            url = "https://swapi.info/api/planets/5/"
         )
 
         val result = dto.toDomain()
@@ -99,7 +99,7 @@ class PlanetMappersTest {
             climate = "unknown",
             orbitalPeriod = "5110",
             gravity = "1.5 (surface), 1 standard (Cloud City)",
-            url = "https://swapi.dev/api/planets/6/"
+            url = "https://swapi.info/api/planets/6/"
         )
 
         val result = dto.toDomain()
@@ -114,7 +114,7 @@ class PlanetMappersTest {
             climate = "temperate",
             orbitalPeriod = "402",
             gravity = "unknown",
-            url = "https://swapi.dev/api/planets/7/"
+            url = "https://swapi.info/api/planets/7/"
         )
 
         val result = dto.toDomain()
@@ -129,7 +129,7 @@ class PlanetMappersTest {
             climate = "temperate",
             orbitalPeriod = "unknown",
             gravity = "1 standard",
-            url = "https://swapi.dev/api/planets/8/"
+            url = "https://swapi.info/api/planets/8/"
         )
 
         val result = dto.toDomain()
@@ -145,7 +145,7 @@ class PlanetMappersTest {
             climate = "unknown",
             orbitalPeriod = "unknown",
             gravity = "unknown",
-            url = "https://swapi.dev/api/planets/10/"
+            url = "https://swapi.info/api/planets/10/"
         )
 
         // When
