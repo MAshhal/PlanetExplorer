@@ -6,6 +6,7 @@ import com.mystic.planetexplorer.domain.repository.PlanetRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -17,11 +18,12 @@ class GetPlanetsUseCaseTest {
 
     private lateinit var repository: PlanetRepository
     private lateinit var useCase: GetPlanetsUseCase
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setup() {
         repository = mockk()
-        useCase = GetPlanetsUseCase(repository)
+        useCase = GetPlanetsUseCase(repository, testDispatcher)
     }
 
     @Test
