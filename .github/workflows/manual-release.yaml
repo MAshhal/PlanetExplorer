@@ -11,10 +11,16 @@ on:
         description: 'Version name for the release (e.g., 1.0.0)'
         required: true
         type: string
+      runTests:
+        description: 'Run unit tests before building'
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   test:
     name: Run Unit Tests
+    if: ${{ inputs.runTests }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -41,6 +47,7 @@ jobs:
   build:
     name: Build Release APK
     needs: test
+    if: ${{ always() && (needs.test.result == 'success' || needs.test.result == 'skipped') }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
